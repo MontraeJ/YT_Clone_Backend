@@ -1,5 +1,6 @@
 const Comment = require("../models/comment")
 const express = require("express");
+const { exist } = require("joi");
 const router = express.Router();
 
 //endpoints will go here
@@ -12,6 +13,20 @@ router.get('/', async(req, res) => {
            return res.status(500).send(`Internal Server Error: ${ex}`);
        }
     });
+router.get('/:id', async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+
+        if (!product)
+            return res.status(400).send(`The product with id "${req.params.id}" does not exist.`);
+
+            return res.send(product);
+
+          } catch (ex) {
+            return res.status(500).send(`Internal Server Error: ${ex}`);
+          }
+});
+
 router.post("/", async (req, res) => {//from the frontend
     try {
         let newComment = await new Comment({//what is expected to arrive
