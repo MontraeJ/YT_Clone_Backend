@@ -39,9 +39,22 @@ router.get('/video/:videoID', async (req, res) => {
             return res.status(500).send(`Internal Server Error: ${ex}`);
           }
 });
+router.get('/like/:id', async (req, res) => {
+    try {
+        const comments = await Comment.find({id:req.params.id});
+
+        if (!comments)
+            return res.status(400).send(`The comment with id "${req.params.id}" does not exist.`);
+
+            return res.send(comments);
+
+          } catch (ex) {
+            return res.status(500).send(`Internal Server Error: ${ex}`);
+          }
+});
 router.post("/", async (req, res) => {//from the frontend
     try {
-        let newComment = await new Comment({//what is expected to arrive
+        let newComment = await Comment({//what is expected to arrive
             videoID: req.body.videoID,
             likes: 0,
             dislikes: 0,
@@ -55,15 +68,18 @@ router.post("/", async (req, res) => {//from the frontend
 })
 /*router.put('/like/:id', async (req, res) => {
    try {
-           const comment = await Comment.findByIdAndUpdate(
-           req.params.id,
-           {$inc: likes. 
-             },
-           {new: true}
-       );
-
+    const comment = await new Comment.findByIdAndUpdate(
+    req.params.id.updateOne(
+               {
+                 $inc: {
+                    likes: 1
+             }
+        },
+        {new:true} )  
+    );
+       
        if (!comment)
-           return res.status(400).send(`The comment with id "${req.params.id}" does not exist.`);
+           return res.status(400).send(`The comment with id "${req.params.id.updateOne}" does not exist.`);
 
        await comment.save();
        
