@@ -66,20 +66,22 @@ router.post("/", async (req, res) => {//from the frontend
         return res.status(500).send(`Internal Server Error: ${error}`);
     }
 })
-/*router.put('/like/:id', async (req, res) => {
+//PUT an existing comment
+//http://localhost:3009/api/like/:id
+router.put('/like/:id', async (req, res) => {
    try {
-    const comment = await new Comment.findByIdAndUpdate(
-    req.params.id.updateOne(
+    const comment = await Comment.findByIdAndUpdate(
+    req.params.id,
                {
                  $inc: {
                     likes: 1
              }
         },
-        {new:true} )  
+        {new:true}   
     );
        
        if (!comment)
-           return res.status(400).send(`The comment with id "${req.params.id.updateOne}" does not exist.`);
+           return res.status(400).send(`The comment with id "${req.params.id}" does not exist.`);
 
        await comment.save();
        
@@ -87,5 +89,27 @@ router.post("/", async (req, res) => {//from the frontend
       }catch(ex) {
        return res.status(500).send(`Internal Server Error:${ex}`);
     } 
-});*/
+});
+router.put('/dislike/:id', async (req, res) => {
+    try {
+     const comment = await Comment.findByIdAndUpdate(
+     req.params.id,
+                {
+                  $inc: {
+                     dislikes: 1
+              }
+         },
+         {new:true}   
+     );
+        
+        if (!comment)
+            return res.status(400).send(`The comment with id "${req.params.id}" does not exist.`);
+ 
+        await comment.save();
+        
+        return res.send(comment);
+       }catch(ex) {
+        return res.status(500).send(`Internal Server Error:${ex}`);
+     } 
+ });
 module.exports = router;
